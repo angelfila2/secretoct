@@ -1,0 +1,424 @@
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
+from sklearn.metrics import accuracy_score, f1_score, classification_report, precision_score, recall_score
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from imblearn.over_sampling import SMOTE
+from xgboost import XGBClassifier
+import time
+import psutil
+
+# Load datasets
+data_main = pd.read_csv('/Users/kannanpavanaa/Downloads/loan_approval_dataset.csv')
+
+# Remove whitespace from column names
+data_main.columns = data_main.columns.str.strip()
+
+# Preview the cleaned column names
+print("Cleaned column names:", data_main.columns.tolist())
+
+# Print out column names to verify exact spelling and presence of 'loan_status'
+print("Column names in data_main:", data_main.columns.tolist())
+
+# Clean up column names
+data_main.columns = data_main.columns.str.strip().str.lower()
+
+# Verify column names again
+print("Cleaned column names:", data_main.columns.tolist())
+
+# Check if 'loan_status' exists after cleaning column names
+if 'loan_status' in data_main.columns:
+    # Check class distribution in 'loan_status'
+    print("\nOriginal class distribution in 'loan_status':")
+    print(data_main['loan_status'].value_counts())
+else:
+    print("The column 'loan_status' was not found in the dataset.")
+
+
+# Step 3: Check class distribution in 'loan_status'
+data_main.columns = data_main.columns.str.strip()
+print("\nOriginal class distribution in 'loan_status':")
+print(data_main['loan_status'].value_counts())
+
+# Import necessary libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from imblearn.over_sampling import SMOTE
+from sklearn.metrics import accuracy_score, f1_score, classification_report
+from xgboost import XGBClassifier
+
+
+# Clean column names
+data_main.columns = data_main.columns.str.strip().str.lower()
+
+# Convert 'loan_status' to numeric values: 1 for 'Approved', 0 for 'Rejected'
+data_main['loan_status'] = data_main['loan_status'].apply(lambda x: 1 if x.strip().lower() == 'approved' else 0)
+
+# Separate the target and features
+y = data_main['loan_status']
+X = data_main.drop(columns=['loan_status', 'loan_id'], errors='ignore')  # Drop irrelevant columns like Loan_ID
+
+# One-hot encode categorical variables
+X = pd.get_dummies(X, drop_first=True)
+
+# Split the data into training and testing sets with stratification to ensure balanced classes
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+
+# Apply SMOTE to handle class imbalance on the training set
+smote = SMOTE(random_state=42)
+X_train_resampled, y_train_resampled = smote.fit_resample(X_train, y_train)
+
+# Verify the class distribution after SMOTE
+print("\nClass distribution in y_train after SMOTE:")
+print(pd.Series(y_train_resampled).value_counts())
+
+# Scale the features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train_resampled)
+X_test_scaled = scaler.transform(X_test)
+
+# Train an XGBoost classifier
+model = XGBClassifier(random_state=42)
+model.fit(X_train_scaled, y_train_resampled)
+
+# Define the model
+model = XGBClassifier(random_state=42)
+
+# Set up the parameter grid for hyperparameter tuning
+param_grid = {
+    'n_estimators': [50, 100, 200],          # Number of trees
+    'max_depth': [3, 5, 7],                  # Depth of each tree
+    'learning_rate': [0.01, 0.1, 0.2],       # Learning rate for boosting
+    'subsample': [0.7, 0.8, 1.0],            # Subsampling ratio of the training instances
+    'colsample_bytree': [0.7, 0.8, 1.0],     # Subsampling ratio of columns when constructing each tree
+    'reg_alpha': [0, 0.1, 0.5],              # L1 regularization term on weights
+    'reg_lambda': [1, 1.5, 2]                # L2 regularization term on weights
+}
+
+# Set up GridSearchCV
+grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=5, scoring='f1', n_jobs=-1, verbose=2)
+
+# Perform hyperparameter tuning
+grid_search.fit(X_train_scaled, y_train_resampled)
+
+# Best parameters and best score
+print("Best Parameters:", grid_search.best_params_)
+print("Best F1 Score:", grid_search.best_score_)
+
+# Use the best model from GridSearchCV for predictions
+best_model = grid_search.best_estimator_
+y_pred = best_model.predict(X_test_scaled)
+
+from xgboost import XGBClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, f1_score, classification_report
+
+# Assuming y is your target variable
+# Calculate the number of instances for each class
+num_positive = sum(y)  # Count of positive class (e.g., 'approved')
+num_negative = len(y) - num_positive  # Count of negative class (e.g., 'rejected')
+
+# Set the scale_pos_weight based on the class imbalance
+model = XGBClassifier(scale_pos_weight=(num_negative / num_positive))
+
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train the model
+model.fit(X_train, y_train)
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+print("\nModel Evaluation Metrics:")
+print(f"Accuracy: {accuracy:.2f}")
+print(f"F1 Score: {f1:.2f}")
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
+
+# Remove whitespace from column names
+X_train.columns = X_train.columns.str.strip()
+
+# Ensure the model is defined
+model = XGBClassifier(random_state=42)
+
+# Train the model (fit)
+model.fit(X_train_scaled, y_train_resampled)
+
+# After fitting, proceed with predictions
+y_pred = model.predict(X_test_scaled)
+
+# Evaluate with accuracy and F1 score
+accuracy = accuracy_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+print("\nModel Evaluation Metrics:")
+print(f"Accuracy: {accuracy:.2f}")
+print(f"F1 Score: {f1:.2f}")
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
+
+# Display confusion matrix
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(y_test, y_pred)
+print("\nConfusion Matrix:\n",cm)
+
+import time
+import numpy as np
+import psutil  # For resource monitoring (optional)
+
+
+# Function to capture operational metrics
+def capture_operational_metrics(model, X_test):
+    # Measure latency for each prediction
+    start_time = time.time()
+    predictions = model.predict(X_test)  # Model prediction on the entire test set
+    end_time = time.time()
+    
+    # Calculate total latency and average latency per sample
+    total_latency = end_time - start_time
+    avg_latency = total_latency / len(X_test)
+    
+    # Calculate throughput (predictions per second)
+    throughput = len(X_test) / total_latency
+    
+    # Simulate availability as a static value (e.g., 100% uptime)
+    availability = 100.0  # Assumes the model is always available in this setup
+    
+    # (Optional) Monitor CPU and Memory usage
+    cpu_usage = psutil.cpu_percent(interval=1)
+    memory_usage = psutil.virtual_memory().percent
+    
+    # Display metrics
+    print("Operational Metrics:")
+    print(f"Total Latency: {total_latency:.6f} seconds")
+    print(f"Average Latency per Sample: {avg_latency:.6f} seconds")
+    print(f"Throughput: {throughput:.2f} predictions per second")
+    print(f"Availability: {availability}%")
+    print(f"CPU Usage: {cpu_usage}%")
+    print(f"Memory Usage: {memory_usage}%")
+
+# Capture metrics
+capture_operational_metrics(model, X_test_scaled)
+
+import tkinter as tk
+from tkinter import messagebox
+import numpy as np
+
+import tkinter as tk
+from tkinter import messagebox
+import numpy as np
+
+# Function to get prediction from the model
+# Function to get prediction from the model
+def get_prediction():
+    try:
+        # Collect inputs
+        income = float(entry_income.get())
+        loan_amount = float(entry_loan_amount.get())
+        loan_term = float(entry_loan_term.get())
+        cibil_score = float(entry_cibil_score.get())
+        residential_assets = float(entry_residential_assets.get())
+        commercial_assets = float(entry_commercial_assets.get())
+        luxury_assets = float(entry_luxury_assets.get())
+        bank_assets = float(entry_bank_assets.get())
+
+        # Prepare the data for the model
+        input_data = np.array([[income, loan_amount, loan_term, cibil_score,
+                                residential_assets, commercial_assets,
+                                luxury_assets, bank_assets]])
+        
+        # Convert to DataFrame to align with training data structure
+        input_df = pd.DataFrame(input_data, columns=[
+            'income_annum', 'loan_amount', 'loan_term', 'cibil_score', 
+            'residential_assets_value', 'commercial_assets_value',
+            'luxury_assets_value', 'bank_asset_value'
+        ])
+        
+        # Ensure input_df has all columns required by the scaler/model (11 features)
+        # Add any missing columns as zero
+        for col in X.columns:  # X is the DataFrame used in training with one-hot encoding
+            if col not in input_df.columns:
+                input_df[col] = 0
+        
+        # Ensure columns are in the same order as training data
+        input_df = input_df[X.columns]
+        
+        # Scale the data using the already-defined scaler
+        input_data_scaled = scaler.transform(input_df)
+
+        # Make prediction using the already-trained model
+        prediction = model.predict(input_data_scaled)
+
+        # Display result
+        result = "Loan Approved" if prediction[0] == 1 else "Loan Rejected"
+        messagebox.showinfo("Prediction Result", result)
+
+    except Exception as e:
+        messagebox.showerror("Error", f"Invalid input or error in prediction: {e}")
+
+import numpy as np
+from sklearn.metrics import accuracy_score, f1_score, classification_report
+import shap  # checkfeature contributions
+
+# Lower the decision threshold to make the model less conservative
+def make_prediction_with_threshold(model, X, threshold=0.5):
+    # Predict probabilities
+    probabilities = model.predict_proba(X)[:, 1]
+    # Apply threshold
+    predictions = (probabilities >= threshold).astype(int)
+    return predictions, probabilities
+
+# Get the scaled input data (assuming `X_test_scaled` is defined)
+y_pred, y_pred_prob = make_prediction_with_threshold(model, X_test_scaled, threshold=0.4)
+
+# Evaluate the model with adjusted threshold
+accuracy = accuracy_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+print("\nModel Evaluation with Adjusted Threshold:")
+print(f"Accuracy: {accuracy:.2f}")
+print(f"F1 Score: {f1:.2f}")
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
+
+# Display confusion matrix
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(y_test, y_pred)
+print("\nConfusion Matrix with Adjusted Threshold:\n", cm)
+
+# Check feature contributions using SHAP (if supported)
+try:
+    explainer = shap.Explainer(model, X_test_scaled)
+    shap_values = explainer(X_test_scaled)
+    print("\nSHAP Values for Feature Contributions:")
+    shap.summary_plot(shap_values, X_test_scaled, feature_names=X.columns)
+except Exception as e:
+    print("SHAP analysis could not be performed:", e)
+
+# Display sample probabilities for debug
+print("\nSample probabilities for each class:")
+for i, prob in enumerate(y_pred_prob[:10]):
+    print(f"Sample {i+1} - Probability of Approval: {prob:.2f}")
+
+import shap
+
+# Get the probability prediction
+probability = model.predict_proba(X_test_scaled)[:, 1]  # Assuming index 1 is the probability of approval
+print(f"Probability of Eligibility: {probability[0]}")
+
+# Adjust the threshold (for instance, set it to 0.2 for more leniency)
+threshold = 0.2
+predicted_eligibility = 1 if probability[0] >= threshold else 0
+print(f"Predicted Eligibility (with threshold {threshold}):", "Approved" if predicted_eligibility == 1 else "Rejected")
+
+# SHAP Analysis for this specific input
+explainer = shap.TreeExplainer(model)
+
+# Prepare the single example as a DataFrame with column names for SHAP compatibility
+single_example = pd.DataFrame([X_test_scaled[0]], columns=X_test.columns)
+
+# Get SHAP values without indexing
+shap_values = explainer.shap_values(single_example)
+
+# Visualize the SHAP values
+shap.initjs()
+shap.force_plot(explainer.expected_value, shap_values, single_example, feature_names=X_test.columns)
+
+# Set up the GUI
+root = tk.Tk()
+root.title("Loan Eligibility Chatbot")
+root.geometry("400x500")
+
+# Create UI components
+label_title = tk.Label(root, text="Loan Eligibility Checker", font=("Arial", 16))
+label_income = tk.Label(root, text="Annual Income:")
+label_loan_amount = tk.Label(root, text="Loan Amount:")
+label_loan_term = tk.Label(root, text="Loan Term (in years):")
+label_cibil_score = tk.Label(root, text="CIBIL Score:")
+label_residential_assets = tk.Label(root, text="Residential Assets Value:")
+label_commercial_assets = tk.Label(root, text="Commercial Assets Value:")
+label_luxury_assets = tk.Label(root, text="Luxury Assets Value:")
+label_bank_assets = tk.Label(root, text="Bank Assets Value:")  # Label for Bank Assets Value
+
+# Entry fields for each input
+entry_income = tk.Entry(root)
+entry_loan_amount = tk.Entry(root)
+entry_loan_term = tk.Entry(root)
+entry_cibil_score = tk.Entry(root)
+entry_residential_assets = tk.Entry(root)
+entry_commercial_assets = tk.Entry(root)
+entry_luxury_assets = tk.Entry(root)
+entry_bank_assets = tk.Entry(root)  # Entry field for Bank Assets Value
+
+# Position UI components on the window
+label_title.pack(pady=10)
+label_income.pack()
+entry_income.pack(pady=5)
+label_loan_amount.pack()
+entry_loan_amount.pack(pady=5)
+label_loan_term.pack()
+entry_loan_term.pack(pady=5)
+label_cibil_score.pack()
+entry_cibil_score.pack(pady=5)
+label_residential_assets.pack()
+entry_residential_assets.pack(pady=5)
+label_commercial_assets.pack()
+entry_commercial_assets.pack(pady=5)
+label_luxury_assets.pack()
+entry_luxury_assets.pack(pady=5)
+label_bank_assets.pack()  # Display Bank Assets Label
+entry_bank_assets.pack(pady=5)  # Display Bank Assets Entry
+
+# Button to get prediction
+btn_predict = tk.Button(root, text="Check Eligibility", command=get_prediction)
+btn_predict.pack(pady=20)
+
+# Run the GUI
+root.mainloop()
+
+
+# Update the get_prediction function to show probabilities
+def get_prediction():
+    try:
+        # Collect inputs (same as before)
+        income = float(entry_income.get())
+        loan_amount = float(entry_loan_amount.get())
+        loan_term = float(entry_loan_term.get())
+        cibil_score = float(entry_cibil_score.get())
+        residential_assets = float(entry_residential_assets.get())
+        commercial_assets = float(entry_commercial_assets.get())
+        luxury_assets = float(entry_luxury_assets.get())
+        bank_assets = float(entry_bank_assets.get())
+
+        # Prepare the data (same as before)
+        input_data = np.array([[income, loan_amount, loan_term, cibil_score,
+                                residential_assets, commercial_assets,
+                                luxury_assets, bank_assets]])
+        input_df = pd.DataFrame(input_data, columns=[
+            'income_annum', 'loan_amount', 'loan_term', 'cibil_score', 
+            'residential_assets_value', 'commercial_assets_value',
+            'luxury_assets_value', 'bank_asset_value'
+        ])
+        for col in X.columns:
+            if col not in input_df.columns:
+                input_df[col] = 0
+        input_df = input_df[X.columns]
+        input_data_scaled = scaler.transform(input_df)
+
+        # Get prediction probability
+        probability = model.predict_proba(input_data_scaled)[0][1]  # Probability for class 1 (Approved)
+
+        # Display result
+        result = "Loan Approved" if probability >= 0.5 else "Loan Rejected"
+        messagebox.showinfo("Prediction Result", f"{result}\nProbability: {probability:.2f}")
+
+    except Exception as e:
+        messagebox.showerror("Error", f"Invalid input or error in prediction: {e}")
+
+
+
+
+
+
+
