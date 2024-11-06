@@ -1,0 +1,100 @@
+{
+    "OOS": {
+        "main": "I'm sorry, but it appears your question may be outside the scope of my assistance.",
+        "details": [
+            "Please ask only banking-related enquiries or the functions that are listed on the homepage of the chatbot. Thank You."
+        ]
+    },
+    "human_agent": {
+        "main": "I’ll be happy to provide you with our hotline number to connect you with a human agent for further assistance.",
+        "details": [
+            "You may contact 9872 4744 for human agent support."
+        ]
+    },
+    "find_branch": {
+        "main": "I’d be glad to help you locate a branch. Here are some of our branch locations for your convenience:",
+        "details": [
+            "North: Woodlands Branch",
+            "South: Marine Parade Branch",
+            "Central: Dhoby Ghaut Branch",
+            "East: Tampines Branch",
+            "West: Jurong East Branch"
+        ]
+    },
+    "IDOOS": {
+        "main": "I apologize, but I’m not equipped to handle this type of request.",
+        "details": [
+            "For the full range of enquiries that we handle, you can refer to the list below:",
+            {
+                "Out-of-scope (OOS)": "OOS",
+                "In-domain out-of-scope (IDOOS)": "IDOOS",
+                "Transfer Information": "transfer_info",
+                "Check Loan Payments": "check_loan_payments",
+                "Check Fees": "check_fees",
+                "Find Branch": "find_branch",
+                "Find ATM": "find_atm",
+                "Account Information": "account_info",
+                "Human Agent": "human_agent",
+                "Cancel Loan": "cancel_loan",
+                "Apply for Loan": "apply_for_loan",
+                "Customer Service": "customer_service",
+                "Reset Password": "reset_password"
+            }
+        ]
+    },
+    "check_fees": {
+        "main": "Thank you for your inquiry regarding our bank fees. Here’s a summary of the relevant fees associated with our services.",
+        "details": [
+            "For international bank transfers, we charge a service fee of 3% on the total amount transferred.",
+            "For accounts opened at our bank, we offer a competitive annual interest rate of 0.3%.",
+            "If you have any specific transactions in mind, please let me know, and I can provide detailed information."
+        ]
+    },
+    "reset_password": {
+        "main": "Thank you for enquiring about passwords. To reset your password, you may head over to our digital banking app and click on 'Reset Password' and follow the guide from there. If you are still unable to reset your password, please feel free to head over to any of our physical branches!"
+    },
+    "customer_service": {
+        "main": "Certainly, I’ll connect you with our customer service team for further support.",
+        "details": [
+            "Please hold for a moment."
+        ]
+    },
+    "check_loan_payments": {
+        "main": "I can provide you with information regarding your loan payments.",
+        "details": [
+            "To obtain an overview of your loan payments, please log in to our digital banking application and navigate to the 'Recent Transactions' section."
+        ]
+    },
+    "find_atm": {
+        "main": "I would be glad to help you locate an ATM.",
+        "details": [
+            "Here are some of our ATM locations for your convenience:",
+            "North: Woodlands ATM",
+            "South: Marine Parade ATM",
+            "Central: Dhoby Ghaut ATM",
+            "East: Tampines ATM",
+            "West: Jurong East ATM"
+        ]
+    },
+    "apply_for_loan": {
+        "main": "I am here to assist you with the home loan application process.",
+        "details": [
+            "Please be advised that our bank exclusively offers home loans. To proceed, kindly log in through our chatbot, and we will calculate your eligibility for a home loan based on your financial details."
+        ]
+    },
+    "cancel_loan": {
+        "main": "I can help you with canceling your loan application.",
+        "details": [
+            "Please provide the loan details, such as the application number or account reference."
+        ]
+    },
+    "transfer_info": {
+        "main": "I can assist you with information regarding transfers. You can initiate or cancel transfers either through our digital banking app or by visiting any of our physical branches.",
+        "details": [
+            "For international transfers, please note that a 3% service charge applies."
+        ]
+    },
+    "account_info": {
+        "main": "Thank you for your inquiry regarding bank accounts. For security reasons, all account creation and closure transactions must be conducted in person at our physical branch locations. Please ensure you bring the necessary identification and verification documents to facilitate the process smoothly. We appreciate your understanding and cooperation in maintaining these security protocols."
+    }
+}

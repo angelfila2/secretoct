@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BankE-Zy Chat Support</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="header">
+            <img src="{{ url_for('static', filename='bank_logo.png') }}" alt="Bank Logo" class="logo">
+            <h1>Welcome to <span class="highlight">BankE-Zy</span></h1>
+            <p class="intro-text">Your trusted digital bank assistant, here to make your financial journey easier and more accessible.</p>
+        </div>
+        <div class="content-section">
+            <p>From checking balances and locating ATMs to applying for loans and learning about fees, BankE-Zy is here to streamline your banking needs. Simply click the chat icon or the button below to start your conversation with Sam, your digital assistant!</p>
+        </div>
+        <h2>Our Services</h2>
+        <div class="services-list">
+            <ul>
+                <li><strong>Account Management:</strong> Open, close, or manage your bank accounts.</li>
+                <li><strong>Loans & Credit:</strong> Information on loan applications and payment checks.</li>
+                <li><strong>Customer Support:</strong> Contact a human agent or learn more about our offerings.</li>
+                <li><strong>ATM & Branch Finder:</strong> Find the nearest ATM or branch location.</li>
+            </ul>
+        </div>
+        <button onclick="toggleChat()" class="cta-button">Start Chatting</button>
+    </div>
+
+    <!-- Chatbot Toggle Button -->
+    <div id="chatbot-toggle" onclick="toggleChat()">
+        <img src="{{ url_for('static', filename='chat_icon.png') }}" alt="Chat Icon">
+    </div>
+
+    <!-- Chat Container (Initially Hidden) -->
+    <div id="chat-container" class="chat-container">
+        <div class="chat-header">
+            <img src="{{ url_for('static', filename='avatar.png') }}" alt="Agent Avatar" class="avatar">
+            <div class="chat-header-text">
+                <p>BankE-Zy Chat Support</p>
+                <span>Hi! I'm Sam, your digital banking assistant. How can I assist you today?</span>
+            </div>
+        </div>
+        
+        <!-- Description Section Inside Chat -->
+        <div class="chat-description">
+            <p><strong>Welcome to BankE-Zy!</strong><br>
+            I’m here to help with a variety of banking tasks, from checking your account balances to finding information on loans or fees. Feel free to ask me anything related to banking!</p>
+        </div>
+
+        <!-- Chatbox for Messages -->
+        <div id="chatbox" class="chat-box">
+            <!-- Chat messages will be appended here by JavaScript -->
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Write a message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
