@@ -167,7 +167,7 @@ print("\nConfusion Matrix:\n",cm)
 
 import time
 import numpy as np
-import psutil  # For resource monitoring (optional)
+import psutil  
 
 
 # Function to capture operational metrics
@@ -187,7 +187,7 @@ def capture_operational_metrics(model, X_test):
     # Simulate availability as a static value (e.g., 100% uptime)
     availability = 100.0  # Assumes the model is always available in this setup
     
-    # (Optional) Monitor CPU and Memory usage
+    
     cpu_usage = psutil.cpu_percent(interval=1)
     memory_usage = psutil.virtual_memory().percent
     
